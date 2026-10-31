@@ -5,6 +5,8 @@ import { KaarsGrafiek } from './grafiek.js';
 import { $, $$, lees, schrijf, hulp, activeerTips } from './hulp.js';
 import * as PF from './portefeuille.js';
 import './orderpaneel.js';
+import './lessen.js';
+import { start as startTour } from './rondleiding.js';
 
 const ui = lees('papier.ui', { gekozen: ASSETS[0].id, tf: '1m' });
 if (!M.ASSET[ui.gekozen]) ui.gekozen = ASSETS[0].id;
@@ -143,3 +145,6 @@ M.bus.addEventListener('zet-asset', (e) => kies(e.detail));
 activeerTips();
 tekenNieuws();
 kies(ui.gekozen);
+
+import { eersteBezoek } from './rondleiding.js';
+if (eersteBezoek()) setTimeout(startTour, 700);
