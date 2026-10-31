@@ -156,7 +156,7 @@ input:hover { border-color: var(--dim); }
 .waarschuwing[hidden] { display: none; }
 .melding { color: var(--papier); font-size: 13px; }
 .melding:empty { display: none; }
-.hoofdknop { border: 0; border-radius: 8px; padding: 12px 14px; font: 600 16px var(--f-tekst); color: var(--ink); margin-top: 4px; }
+.hoofdknop { width: 100%; border: 0; border-radius: 8px; padding: 12px 14px; font: 600 16px var(--f-tekst); color: var(--ink); margin-top: 4px; }
 .hoofdknop.koop { background: var(--stijgen); } .hoofdknop.verkoop { background: var(--dalen); }
 .hoofdknop:hover { filter: brightness(1.1); }
 
@@ -181,7 +181,7 @@ input:hover { border-color: var(--dim); }
 .dl-titel { font: 800 22px/1.2 var(--f-kop); margin-bottom: 4px; }
 .dl-knoppen { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; }
 .dialoog .knop-klein { border-color: var(--ink); color: var(--ink); } .dialoog .knop-klein:hover { background: var(--papier-2); }
-.dialoog .hoofdknop { margin: 0; padding: 10px 16px; }
+.dialoog .hoofdknop { width: auto; margin: 0; padding: 10px 16px; }
 
 /* portefeuille */
 .portefeuille { grid-area: port; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -273,3 +273,15 @@ body[data-view="lessen"] .mobiel-balk { display: none; }
   body[data-view="markt"] [data-sec="portefeuille"], body[data-view="portefeuille"] [data-sec="markt"] { display: none; }
 }
 @media (min-width: 960px) { .tab-portefeuille { display: none; } }
+
+/* beweging beperken */
+@media (prefers-reduced-motion: reduce) {
+  .tape-spoor { animation: none; width: auto; overflow-x: auto; }
+  .tickerband { overflow-x: auto; }
+  .tape-set[aria-hidden="true"] { display: none; }
+  .bon { transform: none; }
+  .bon-houder.print .bon, .bon-houder.weg .bon { animation: none; }
+  .bon-houder.weg { display: none; }
+  .flits-op, .flits-neer, .nieuws-lijst li:first-child { animation: none; }
+  .tour-spot, .orderpaneel { transition: none; }
+}
