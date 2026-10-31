@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Crypto Oefenlab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">₿</span><span>Crypto <b>Oefenlab</b></span></a>
+    <div class="top-actions"><span class="demo-pill"><i></i> SIMULATIE · GEEN ECHTE KOERSEN</span><button id="resetBtn" class="ghost small">Reset oefenaccount</button></div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div><p class="eyebrow">JOUW VIRTUELE CRYPTOPORTEMONNEE</p><h1>Oefen. Ontdek. <span>Leer.</span></h1>
+      <p class="sub">Handel met fictief geld, volg nepkoersen en ontdek wat er met je portefeuille gebeurt over 30 dagen.</p></div>
+      <div class="hero-chip"><span class="pulse"></span><div><b>Oefenmodus actief</b><small>Alles blijft op dit apparaat</small></div></div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card main-stat"><div class="stat-label">Totale portefeuillewaarde <span class="tiny-tag">SIMULATIE</span></div><div id="totalValue" class="big-number">€ 300,00</div><div id="totalChange" class="stat-change neutral">— Startwaarde</div></article>
+      <article class="stat-card"><div class="stat-label">Beschikbaar saldo</div><div id="cashValue" class="mid-number">€ 300,00</div><small>Fictief eurotegoed</small></article>
+      <article class="stat-card"><div class="stat-label">Totaal resultaat</div><div id="profitValue" class="mid-number">€ 0,00</div><small>Sinds de start</small></article>
+      <article class="stat-card"><div class="stat-label">Simulatiedag</div><div id="dayValue" class="mid-number">Dag 1 / 30</div><small id="dateValue">Start van je oefenperiode</small></article>
+    </section>
+
+    <section class="panel chart-panel">
+      <div class="section-head"><div><p class="eyebrow">ONTWIKKELING</p><h2>Portefeuille over tijd</h2></div><div class="chart-legend"><span><i class="legend-line"></i> Portefeuille</span><span><i class="legend-dash"></i> Startwaarde</span></div></div>
+      <div class="chart-wrap"><canvas id="portfolioChart" aria-label="Grafiek van portefeuillewaarde"></canvas></div>
+      <div class="timeline"><span id="chartStart">Dag 1</span><span id="chartEnd">Dag 30</span></div>
+      <div class="time-controls"><span class="control-label">Tijd vooruitspoelen</span><button class="time-btn" data-days="1">+1 dag</button><button class="time-btn" data-days="7">+7 dagen</button><button class="time-btn primary" data-days="30">+30 dagen</button><span id="timeNotice" class="time-notice">Je staat op dag 1.</span></div>
+    </section>
+
+    <section class="content-grid">
+      <section class="panel market-panel">
+        <div class="section-head"><div><p class="eyebrow">MARKTOVERZICHT</p><h2>Fictieve koersen</h2></div><span class="live-label"><i></i> NEP-LIVE</span></div>
+        <p class="muted">Koersen bewegen automatisch. Ze zijn willekeurig gegenereerd en volgen geen echte markt.</p>
+        <div id="coinList" class="coin-list"></div>
+      </section>
+
+      <section class="panel trade-panel">
+        <div class="section-head"><div><p class="eyebrow">OEFENHANDEL</p><h2>Koop of verkoop</h2></div></div>
+        <div class="trade-tabs"><button class="tab active" data-side="buy">Kopen</button><button class="tab" data-side="sell">Verkopen</button></div>
+        <label for="coinSelect">Munt</label><select id="coinSelect"></select>
+        <div class="selected-coin"><div id="selectedSymbol" class="coin-icon">₿</div><div><b id="selectedName">Bitcoin</b><small id="selectedPrice">€ 60.000,00</small></div><span id="selectedMove" class="move neutral">0,00%</span></div>
+        <label for="amountInput">Bedrag in euro</label><div class="amount-input"><span>€</span><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="Bijv. 25,00"></div>
+        <div class="quick-amounts"><button data-amount="10">€10</button><button data-amount="25">€25</button><button data-amount="50">€50</button><button data-amount="100">€100</button><button data-amount="max">Max</button></div>
+        <div class="trade-summary"><div><span>Geschatte hoeveelheid</span><b id="estimatedQty">—</b></div><div><span>Transactiekosten (simulatie 0,2%)</span><b id="feeValue">€ 0,00</b></div></div>
+        <button id="tradeBtn" class="trade-submit">Koop fictief</button>
+        <p id="tradeMessage" class="trade-message" role="status">Dit zijn uitsluitend oefentransacties.</p>
+      </section>
+    </section>
+
+    <section class="panel holdings-panel">
+      <div class="section-head"><div><p class="eyebrow">JOUW BEZITTINGEN</p><h2>Mijn portefeuille</h2></div><span id="holdingCount" class="holding-count">0 munten</span></div>
+      <div class="table-scroll"><table><thead><tr><th>Munt</th><th>Hoeveelheid</th><th>Waarde</th><th>Resultaat</th><th></th></tr></thead><tbody id="holdingsBody"><tr><td colspan="5" class="empty">Je hebt nog geen fictieve crypto. Kies hierboven een munt om te oefenen.</td></tr></tbody></table></div>
+    </section>
+
+    <section class="bottom-grid">
+      <section class="panel">
+        <div class="section-head"><div><p class="eyebrow">ACTIVITEIT</p><h2>Transactiegeschiedenis</h2></div></div>
+        <div id="activityList" class="activity-list"><p class="empty">Je eerste oefentransactie verschijnt hier.</p></div>
+      </section>
+      <section class="panel">
+        <div class="section-head"><div><p class="eyebrow">LEERDOEL</p><h2>Jouw groeimijlpalen</h2></div></div>
+        <div id="goalList" class="goal-list"></div>
+        <p class="goal-foot">Mijlpalen zijn doelen om mee te oefenen, geen voorspellingen of garanties.</p>
+      </section>
+    </section>
+    <footer><b>Crypto Oefenlab</b> · Alleen simulatie. Geen echte cryptovaluta, geen echte transacties en geen financieel advies. Je gegevens worden lokaal in je browser opgeslagen.</footer>
+  </main>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
