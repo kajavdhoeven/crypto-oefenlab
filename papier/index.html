@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papier - oefenen met handelen met nepgeld</title>
+<meta name="description" content="Papier is een oefenapp voor crypto- en aandelenhandel met nepgeld. Fictieve koersen, 300 euro startkapitaal, rondleiding en korte lessen. Alles is fictief.">
+<meta property="og:title" content="Papier - oefenen met handelen met nepgeld">
+<meta property="og:description" content="Leer hoe handelen werkt zonder risico. Fictieve munten en aandelen, een live gesimuleerde markt en 300 euro nepgeld.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_NL">
+<meta name="theme-color" content="#111210">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='11' y='22' width='20' height='6' fill='%23EEE9DD'/%3E%3Cpolyline points='14,26 18,24.5 21,27 25,24 29,25' fill='none' stroke='%23F2A900' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='15' r='9' fill='%23EEE9DD'/%3E%3Ccircle cx='11' cy='15' r='6' fill='none' stroke='%23111210' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='15' r='3' fill='none' stroke='%23111210' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-view="markt">
+<a class="skip" href="#hoofd">Naar hoofdinhoud</a>
+
+<div class="boven">
+  <div class="tickerband" aria-label="Koersen van alle fictieve markten">
+    <div class="tape-spoor" id="tape"></div>
+  </div>
+  <header class="kop">
+    <div class="merk">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="11" y="22" width="20" height="6" fill="#EEE9DD"/>
+        <polyline points="14,26 18,24.5 21,27 25,24 29,25" fill="none" stroke="#F2A900" stroke-width="1.5"/>
+        <circle cx="11" cy="15" r="9" fill="#EEE9DD"/>
+        <circle cx="11" cy="15" r="6" fill="none" stroke="#111210" stroke-width="1.5"/>
+        <circle cx="11" cy="15" r="3" fill="none" stroke="#111210" stroke-width="1.5"/>
+      </svg>
+      <h1 class="merknaam">Papier</h1>
+      <span class="slogan">Oefenen met nepgeld</span>
+    </div>
+    <nav class="tabs" aria-label="Weergave">
+      <button type="button" class="tab" data-view="markt" aria-pressed="true">Markt</button>
+      <button type="button" class="tab tab-portefeuille" data-view="portefeuille" aria-pressed="false">Portefeuille</button>
+      <button type="button" class="tab" data-view="lessen" id="nav-lessen" aria-pressed="false">Lessen</button>
+    </nav>
+    <div class="kopacties">
+      <time class="klok mono" id="klok" title="Gesimuleerde tijd in Amsterdam"></time>
+      <div class="snelheid" role="group" aria-label="Tijdversneller">
+        <button type="button" data-s="1" aria-pressed="true">1x</button>
+        <button type="button" data-s="10" aria-pressed="false">10x</button>
+        <button type="button" data-s="60" aria-pressed="false">60x</button>
+      </div>
+      <button type="button" class="knop-klein" id="btn-tour">Rondleiding</button>
+    </div>
+  </header>
+</div>
+
+<div class="banner" id="banner" role="status" hidden></div>
+
+<main id="hoofd" class="terminal">
+  <aside class="assetlijst" data-sec="markt" aria-label="Markten">
+    <h2 class="kopje">Markten</h2>
+    <ul id="assets" class="assets"></ul>
+  </aside>
+
+  <section class="midden" data-sec="markt" aria-label="Koers en orderboek">
+    <div class="assetkop">
+      <div>
+        <h2 class="assetnaam" id="k-naam"></h2>
+        <p class="assetrol" id="k-rol"></p>
+      </div>
+      <div class="assetprijs">
+        <div class="groot mono" id="k-prijs"></div>
+        <div class="mono" id="k-verschil"></div>
+      </div>
+      <div class="assetstatus" id="k-status"></div>
+    </div>
+    <div class="tfbalk">
+      <div class="tf" role="group" aria-label="Tijdsinterval van de candles">
+        <button type="button" data-tf="1m" aria-pressed="true">1m</button>
+        <button type="button" data-tf="5m" aria-pressed="false">5m</button>
+        <button type="button" data-tf="1u" aria-pressed="false">1u</button>
+      </div>
+      <span class="hint">Candles <button type="button" class="vraag" data-begrip="candle" aria-label="Uitleg: candle">?</button> · beweeg of tik over de grafiek voor details</span>
+    </div>
+    <div class="grafiek-wrap">
+      <canvas id="grafiek" role="img" aria-label="Koersgrafiek"></canvas>
+      <div class="gesloten" id="gesloten" hidden></div>
+    </div>
+    <div class="onder">
+      <section class="orderboek" aria-label="Orderboek">
+        <h3 class="kopje">Orderboek <button type="button" class="vraag" data-begrip="orderboek" aria-label="Uitleg: orderboek">?</button></h3>
+        <div class="ob-kop mono"><span>Prijs</span><span>Aantal</span></div>
+        <div id="ob-asks" class="ob-zijde"></div>
+        <div class="ob-mid mono" id="ob-mid"></div>
+        <div id="ob-bids" class="ob-zijde"></div>
+      </section>
+      <section class="nieuws" aria-label="Nieuwsfeed">
+        <h3 class="kopje">Nieuws</h3>
+        <ul id="nieuws" class="nieuws-lijst"></ul>
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer class="voet">
+  <p>Alles op deze site is fictief. Geen echt geld, geen echte koersen, geen beleggingsadvies.</p>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
