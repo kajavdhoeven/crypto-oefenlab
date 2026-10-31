@@ -1,78 +1,169 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101827">
-  <title>Crypto Oefenlab</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papier - oefenen met handelen met nepgeld</title>
+<meta name="description" content="Papier is een oefenapp voor crypto- en aandelenhandel met nepgeld. Fictieve koersen, 300 euro startkapitaal, rondleiding en korte lessen. Alles is fictief.">
+<meta property="og:title" content="Papier - oefenen met handelen met nepgeld">
+<meta property="og:description" content="Leer hoe handelen werkt zonder risico. Fictieve munten en aandelen, een live gesimuleerde markt en 300 euro nepgeld.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="nl_NL">
+<meta name="theme-color" content="#111210">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='11' y='22' width='20' height='6' fill='%23EEE9DD'/%3E%3Cpolyline points='14,26 18,24.5 21,27 25,24 29,25' fill='none' stroke='%23F2A900' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='15' r='9' fill='%23EEE9DD'/%3E%3Ccircle cx='11' cy='15' r='6' fill='none' stroke='%23111210' stroke-width='1.5'/%3E%3Ccircle cx='11' cy='15' r='3' fill='none' stroke='%23111210' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="#"><span class="brand-mark">₿</span><span>Crypto <b>Oefenlab</b></span></a>
-    <div class="top-actions"><span class="demo-pill"><i></i> SIMULATIE · GEEN ECHTE KOERSEN</span><button id="resetBtn" class="ghost small">Reset oefenaccount</button></div>
+<body data-view="markt">
+<a class="skip" href="#hoofd">Naar hoofdinhoud</a>
+
+<div class="boven">
+  <div class="tickerband" aria-label="Koersen van alle fictieve markten">
+    <div class="tape-spoor" id="tape"></div>
+  </div>
+  <header class="kop">
+    <div class="merk">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="11" y="22" width="20" height="6" fill="#EEE9DD"/>
+        <polyline points="14,26 18,24.5 21,27 25,24 29,25" fill="none" stroke="#F2A900" stroke-width="1.5"/>
+        <circle cx="11" cy="15" r="9" fill="#EEE9DD"/>
+        <circle cx="11" cy="15" r="6" fill="none" stroke="#111210" stroke-width="1.5"/>
+        <circle cx="11" cy="15" r="3" fill="none" stroke="#111210" stroke-width="1.5"/>
+      </svg>
+      <h1 class="merknaam">Papier</h1>
+      <span class="slogan">Oefenen met nepgeld</span>
+    </div>
+    <nav class="tabs" aria-label="Weergave">
+      <button type="button" class="tab" data-view="markt" aria-pressed="true">Markt</button>
+      <button type="button" class="tab tab-portefeuille" data-view="portefeuille" aria-pressed="false">Portefeuille</button>
+      <button type="button" class="tab" data-view="lessen" id="nav-lessen" aria-pressed="false">Lessen</button>
+    </nav>
+    <div class="kopacties">
+      <time class="klok mono" id="klok" title="Gesimuleerde tijd in Amsterdam"></time>
+      <div class="snelheid" role="group" aria-label="Tijdversneller">
+        <button type="button" data-s="1" aria-pressed="true">1x</button>
+        <button type="button" data-s="10" aria-pressed="false">10x</button>
+        <button type="button" data-s="60" aria-pressed="false">60x</button>
+      </div>
+      <button type="button" class="knop-klein" id="btn-tour">Rondleiding</button>
+    </div>
   </header>
+</div>
 
-  <main class="wrap">
-    <section class="hero">
-      <div><p class="eyebrow">JOUW VIRTUELE CRYPTOPORTEMONNEE</p><h1>Oefen. Ontdek. <span>Leer.</span></h1>
-      <p class="sub">Handel met fictief geld, volg nepkoersen en ontdek wat er met je portefeuille gebeurt over 30 dagen.</p></div>
-      <div class="hero-chip"><span class="pulse"></span><div><b>Oefenmodus actief</b><small>Alles blijft op dit apparaat</small></div></div>
-    </section>
+<div class="banner" id="banner" role="status" hidden></div>
 
-    <section class="stats-grid">
-      <article class="stat-card main-stat"><div class="stat-label">Totale portefeuillewaarde <span class="tiny-tag">SIMULATIE</span></div><div id="totalValue" class="big-number">€ 300,00</div><div id="totalChange" class="stat-change neutral">— Startwaarde</div></article>
-      <article class="stat-card"><div class="stat-label">Beschikbaar saldo</div><div id="cashValue" class="mid-number">€ 300,00</div><small>Fictief eurotegoed</small></article>
-      <article class="stat-card"><div class="stat-label">Totaal resultaat</div><div id="profitValue" class="mid-number">€ 0,00</div><small>Sinds de start</small></article>
-      <article class="stat-card"><div class="stat-label">Simulatiedag</div><div id="dayValue" class="mid-number">Dag 1 / 30</div><small id="dateValue">Start van je oefenperiode</small></article>
-    </section>
+<main id="hoofd" class="terminal">
+  <aside class="assetlijst" data-sec="markt" aria-label="Markten">
+    <h2 class="kopje">Markten</h2>
+    <ul id="assets" class="assets"></ul>
+  </aside>
 
-    <section class="panel chart-panel">
-      <div class="section-head"><div><p class="eyebrow">ONTWIKKELING</p><h2>Portefeuille over tijd</h2></div><div class="chart-legend"><span><i class="legend-line"></i> Portefeuille</span><span><i class="legend-dash"></i> Startwaarde</span></div></div>
-      <div class="chart-wrap"><canvas id="portfolioChart" aria-label="Grafiek van portefeuillewaarde"></canvas></div>
-      <div class="timeline"><span id="chartStart">Dag 1</span><span id="chartEnd">Dag 30</span></div>
-      <div class="time-controls"><span class="control-label">Tijd vooruitspoelen</span><button class="time-btn" data-days="1">+1 dag</button><button class="time-btn" data-days="7">+7 dagen</button><button class="time-btn primary" data-days="30">+30 dagen</button><span id="timeNotice" class="time-notice">Je staat op dag 1.</span></div>
-    </section>
-
-    <section class="content-grid">
-      <section class="panel market-panel">
-        <div class="section-head"><div><p class="eyebrow">MARKTOVERZICHT</p><h2>Fictieve koersen</h2></div><span class="live-label"><i></i> NEP-LIVE</span></div>
-        <p class="muted">Koersen bewegen automatisch. Ze zijn willekeurig gegenereerd en volgen geen echte markt.</p>
-        <div id="coinList" class="coin-list"></div>
+  <section class="midden" data-sec="markt" aria-label="Koers en orderboek">
+    <div class="assetkop">
+      <div>
+        <h2 class="assetnaam" id="k-naam"></h2>
+        <p class="assetrol" id="k-rol"></p>
+      </div>
+      <div class="assetprijs">
+        <div class="groot mono" id="k-prijs"></div>
+        <div class="mono" id="k-verschil"></div>
+      </div>
+      <div class="assetstatus" id="k-status"></div>
+    </div>
+    <div class="tfbalk">
+      <div class="tf" role="group" aria-label="Tijdsinterval van de candles">
+        <button type="button" data-tf="1m" aria-pressed="true">1m</button>
+        <button type="button" data-tf="5m" aria-pressed="false">5m</button>
+        <button type="button" data-tf="1u" aria-pressed="false">1u</button>
+      </div>
+      <span class="hint">Candles <button type="button" class="vraag" data-begrip="candle" aria-label="Uitleg: candle">?</button> · beweeg of tik over de grafiek voor details</span>
+    </div>
+    <div class="grafiek-wrap">
+      <canvas id="grafiek" role="img" aria-label="Koersgrafiek"></canvas>
+      <div class="gesloten" id="gesloten" hidden></div>
+    </div>
+    <div class="onder">
+      <section class="orderboek" aria-label="Orderboek">
+        <h3 class="kopje">Orderboek <button type="button" class="vraag" data-begrip="orderboek" aria-label="Uitleg: orderboek">?</button></h3>
+        <div class="ob-kop mono"><span>Prijs</span><span>Aantal</span></div>
+        <div id="ob-asks" class="ob-zijde"></div>
+        <div class="ob-mid mono" id="ob-mid"></div>
+        <div id="ob-bids" class="ob-zijde"></div>
       </section>
-
-      <section class="panel trade-panel">
-        <div class="section-head"><div><p class="eyebrow">OEFENHANDEL</p><h2>Koop of verkoop</h2></div></div>
-        <div class="trade-tabs"><button class="tab active" data-side="buy">Kopen</button><button class="tab" data-side="sell">Verkopen</button></div>
-        <label for="coinSelect">Munt</label><select id="coinSelect"></select>
-        <div class="selected-coin"><div id="selectedSymbol" class="coin-icon">₿</div><div><b id="selectedName">Bitcoin</b><small id="selectedPrice">€ 60.000,00</small></div><span id="selectedMove" class="move neutral">0,00%</span></div>
-        <label for="amountInput">Bedrag in euro</label><div class="amount-input"><span>€</span><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="Bijv. 25,00"></div>
-        <div class="quick-amounts"><button data-amount="10">€10</button><button data-amount="25">€25</button><button data-amount="50">€50</button><button data-amount="100">€100</button><button data-amount="max">Max</button></div>
-        <div class="trade-summary"><div><span>Geschatte hoeveelheid</span><b id="estimatedQty">—</b></div><div><span>Transactiekosten (simulatie 0,2%)</span><b id="feeValue">€ 0,00</b></div></div>
-        <button id="tradeBtn" class="trade-submit">Koop fictief</button>
-        <p id="tradeMessage" class="trade-message" role="status">Dit zijn uitsluitend oefentransacties.</p>
+      <section class="nieuws" aria-label="Nieuwsfeed">
+        <h3 class="kopje">Nieuws</h3>
+        <ul id="nieuws" class="nieuws-lijst"></ul>
       </section>
-    </section>
+    </div>
+  </section>
 
-    <section class="panel holdings-panel">
-      <div class="section-head"><div><p class="eyebrow">JOUW BEZITTINGEN</p><h2>Mijn portefeuille</h2></div><span id="holdingCount" class="holding-count">0 munten</span></div>
-      <div class="table-scroll"><table><thead><tr><th>Munt</th><th>Hoeveelheid</th><th>Waarde</th><th>Resultaat</th><th></th></tr></thead><tbody id="holdingsBody"><tr><td colspan="5" class="empty">Je hebt nog geen fictieve crypto. Kies hierboven een munt om te oefenen.</td></tr></tbody></table></div>
-    </section>
+  <section class="orderpaneel" id="orderpaneel" data-sec="markt" aria-label="Order plaatsen">
+    <div class="bon-houder" id="bon-houder"></div>
+    <div class="op-kop">
+      <h2 class="kopje">Order: <span id="op-asset"></span></h2>
+      <button type="button" class="sluit" id="op-sluit" aria-label="Sluit orderpaneel">&times;</button>
+    </div>
+    <div class="seg groot" id="op-kant" role="group" aria-label="Kopen of verkopen">
+      <button type="button" data-kant="koop" aria-pressed="true">Koop</button>
+      <button type="button" data-kant="verkoop" aria-pressed="false">Verkoop</button>
+    </div>
+    <div class="veld-kop"><span>Ordertype</span> <button type="button" class="vraag" id="op-type-tip" data-begrip="market" aria-label="Uitleg: Market">?</button></div>
+    <div class="seg" id="op-type" role="group" aria-label="Ordertype">
+      <button type="button" data-type="markt" aria-pressed="true">Market</button>
+      <button type="button" data-type="limit" aria-pressed="false">Limit</button>
+      <button type="button" data-type="stop" aria-pressed="false">Stop-loss</button>
+    </div>
+    <form id="op-form" novalidate>
+      <label class="veld" id="lbl-prijs" hidden><span id="lbl-prijs-tekst">Limietprijs</span><input id="op-prijs" inputmode="decimal" autocomplete="off"></label>
+      <div class="veld-kop"><label for="op-invoer" id="lbl-invoer-tekst">Aantal</label>
+        <div class="seg klein" id="op-modus" role="group" aria-label="Invoeren op aantal of bedrag">
+          <button type="button" data-modus="aantal" aria-pressed="true">Aantal</button>
+          <button type="button" data-modus="bedrag" aria-pressed="false">Bedrag</button>
+        </div></div>
+      <input class="invoer" id="op-invoer" inputmode="decimal" autocomplete="off" placeholder="0">
+      <div class="pct" id="op-pct" role="group" aria-label="Snelle keuze">
+        <button type="button" data-p="0.25">25%</button><button type="button" data-p="0.5">50%</button><button type="button" data-p="0.75">75%</button><button type="button" data-p="1">100%</button>
+      </div>
+      <p class="beschikbaar mono" id="op-beschikbaar"></p>
+      <dl class="overzicht mono">
+        <dt id="ov-label-prijs">Verwachte prijs</dt><dd id="ov-prijs">-</dd>
+        <dt>Aantal</dt><dd id="ov-aantal">-</dd>
+        <dt>Subtotaal</dt><dd id="ov-sub">-</dd>
+        <dt>Kosten <button type="button" class="vraag" data-begrip="kosten" aria-label="Uitleg: kosten">?</button></dt><dd id="ov-kosten">-</dd>
+        <dt class="tot" id="ov-totaal-label">Totaal te betalen</dt><dd class="tot" id="ov-totaal">-</dd>
+      </dl>
+      <p class="fout" id="op-fout" role="alert"></p>
+      <p class="waarschuwing" id="op-markt-dicht" hidden></p>
+      <p class="melding" id="op-melding" role="status"></p>
+      <button type="submit" class="hoofdknop koop" id="op-submit">Koop</button>
+    </form>
+  </section>
 
-    <section class="bottom-grid">
-      <section class="panel">
-        <div class="section-head"><div><p class="eyebrow">ACTIVITEIT</p><h2>Transactiegeschiedenis</h2></div></div>
-        <div id="activityList" class="activity-list"><p class="empty">Je eerste oefentransactie verschijnt hier.</p></div>
-      </section>
-      <section class="panel">
-        <div class="section-head"><div><p class="eyebrow">LEERDOEL</p><h2>Jouw groeimijlpalen</h2></div></div>
-        <div id="goalList" class="goal-list"></div>
-        <p class="goal-foot">Mijlpalen zijn doelen om mee te oefenen, geen voorspellingen of garanties.</p>
-      </section>
-    </section>
-    <footer><b>Crypto Oefenlab</b> · Alleen simulatie. Geen echte cryptovaluta, geen echte transacties en geen financieel advies. Je gegevens worden lokaal in je browser opgeslagen.</footer>
-  </main>
-  <div id="toast" class="toast" role="status"></div>
-  <script src="app.js"></script>
+  <section class="portefeuille" id="portefeuille" data-sec="portefeuille" aria-label="Portefeuille"></section>
+</main>
+
+<section id="lessen" class="lessen-view" aria-label="Lessen"></section>
+
+<div class="sheet-schaduw" id="sheet-schaduw"></div>
+<div class="mobiel-balk" id="mobiel-balk">
+  <button type="button" class="koop" data-kant="koop" aria-pressed="true">Koop</button>
+  <button type="button" class="verkoop" data-kant="verkoop" aria-pressed="false">Verkoop</button>
+</div>
+
+<dialog id="bevestig" class="dialoog" aria-labelledby="bv-titel">
+  <h2 id="bv-titel" class="dl-titel"></h2>
+  <p class="hint">Controleer je order voordat je bevestigt.</p>
+  <dl class="overzicht mono" id="bv-lijst"></dl>
+  <p id="bv-uitleg" class="hint"></p>
+  <div class="dl-knoppen"><button type="button" class="knop-klein" id="bv-terug">Terug</button><button type="button" class="hoofdknop koop" id="bv-ok">Bevestig order</button></div>
+</dialog>
+
+<footer class="voet">
+  <p>Alles op deze site is fictief. Geen echt geld, geen echte koersen, geen beleggingsadvies.</p>
+</footer>
+
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
