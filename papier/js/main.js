@@ -1,52 +1,20 @@
 // Verbindt markt, grafiek en interface.
 import * as M from './markt.js';
 import { ASSETS } from '../data/assets.js';
-import { BEGRIPPEN } from '../data/lessen.js';
 import { KaarsGrafiek } from './grafiek.js';
-
-const $ = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const lees = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
-const schrijf = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* geblokkeerd */ } };
+import { $, $$, lees, schrijf, hulp, activeerTips } from './hulp.js';
+import * as PF from './portefeuille.js';
+import './orderpaneel.js';
 
 const ui = lees('papier.ui', { gekozen: ASSETS[0].id, tf: '1m' });
 if (!M.ASSET[ui.gekozen]) ui.gekozen = ASSETS[0].id;
 export const gekozen = () => ui.gekozen;
 
+const gevuldVoor = PF.gevuldAantal();
 const rapport = M.laad();
+rapport.gevuld = PF.gevuldAantal() - gevuldVoor;
+PF.init();
 M.start();
-
-// ---------- tooltips ----------
-const tip = document.createElement('div');
-tip.className = 'tooltip'; tip.hidden = true; tip.id = 'tooltip'; tip.setAttribute('role', 'tooltip');
-document.body.append(tip);
-let tipKnop = null;
-function toonTip(knop) {
-  tipKnop = knop;
-  tip.textContent = BEGRIPPEN[knop.dataset.begrip] || '';
-  tip.hidden = false;
-  knop.setAttribute('aria-describedby', 'tooltip');
-  knop.setAttribute('aria-expanded', 'true');
-  const r = knop.getBoundingClientRect(), t = tip.getBoundingClientRect();
-  tip.style.left = Math.max(8, Math.min(innerWidth - t.width - 8, r.left + r.width / 2 - t.width / 2)) + 'px';
-  tip.style.top = (r.bottom + 8 + t.height > innerHeight ? r.top - t.height - 8 : r.bottom + 8) + 'px';
-}
-function verbergTip() { tip.hidden = true; if (tipKnop) tipKnop.setAttribute('aria-expanded', 'false'); tipKnop = null; }
-export function activeerTips(root = document) {
-  $$('.vraag[data-begrip]', root).forEach((k) => {
-    if (k.dataset.klaar) return;
-    k.dataset.klaar = '1';
-    k.addEventListener('mouseenter', () => toonTip(k));
-    k.addEventListener('mouseleave', verbergTip);
-    k.addEventListener('focus', () => toonTip(k));
-    k.addEventListener('blur', verbergTip);
-    k.addEventListener('click', (e) => { e.stopPropagation(); tipKnop === k && !tip.hidden ? verbergTip() : toonTip(k); });
-  });
-}
-addEventListener('click', verbergTip);
-addEventListener('keydown', (e) => { if (e.key === 'Escape') verbergTip(); });
-addEventListener('scroll', verbergTip, { passive: true });
-export const hulp = (b, label) => `<button type="button" class="vraag" data-begrip="${b}" aria-label="Uitleg: ${label || b}">?</button>`;
 
 // ---------- tickerband ----------
 const tkHtml = ASSETS.map((a) => `<span class="tk" data-id="${a.id}"><b>${a.id}</b><span class="tk-p"></span><span class="tk-c"></span></span>`).join('');
@@ -167,9 +135,11 @@ export function toonBanner(tekst) {
 }
 if (rapport.minuten >= 2) {
   const u = Math.floor(rapport.minuten / 60), m = rapport.minuten % 60;
-  toonBanner(`Welkom terug! De markt is ${u ? u + ' uur en ' : ''}${m} min doorgelopen terwijl je weg was.`);
+  toonBanner(`Welkom terug! De markt is ${u ? u + ' uur en ' : ''}${m} min doorgelopen terwijl je weg was.` + (rapport.gevuld ? ` Tijdens die tijd zijn ${rapport.gevuld} openstaande order(s) uitgevoerd. Zie je ordergeschiedenis.` : ''));
 }
 
+M.bus.addEventListener('zet-weergave', (e) => zetWeergave(e.detail));
+M.bus.addEventListener('zet-asset', (e) => kies(e.detail));
 activeerTips();
 tekenNieuws();
 kies(ui.gekozen);

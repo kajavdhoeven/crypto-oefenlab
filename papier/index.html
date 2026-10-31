@@ -98,7 +98,65 @@
       </section>
     </div>
   </section>
+
+  <section class="orderpaneel" id="orderpaneel" data-sec="markt" aria-label="Order plaatsen">
+    <div class="bon-houder" id="bon-houder"></div>
+    <div class="op-kop">
+      <h2 class="kopje">Order: <span id="op-asset"></span></h2>
+      <button type="button" class="sluit" id="op-sluit" aria-label="Sluit orderpaneel">&times;</button>
+    </div>
+    <div class="seg groot" id="op-kant" role="group" aria-label="Kopen of verkopen">
+      <button type="button" data-kant="koop" aria-pressed="true">Koop</button>
+      <button type="button" data-kant="verkoop" aria-pressed="false">Verkoop</button>
+    </div>
+    <div class="veld-kop"><span>Ordertype</span> <button type="button" class="vraag" id="op-type-tip" data-begrip="market" aria-label="Uitleg: Market">?</button></div>
+    <div class="seg" id="op-type" role="group" aria-label="Ordertype">
+      <button type="button" data-type="markt" aria-pressed="true">Market</button>
+      <button type="button" data-type="limit" aria-pressed="false">Limit</button>
+      <button type="button" data-type="stop" aria-pressed="false">Stop-loss</button>
+    </div>
+    <form id="op-form" novalidate>
+      <label class="veld" id="lbl-prijs" hidden><span id="lbl-prijs-tekst">Limietprijs</span><input id="op-prijs" inputmode="decimal" autocomplete="off"></label>
+      <div class="veld-kop"><label for="op-invoer" id="lbl-invoer-tekst">Aantal</label>
+        <div class="seg klein" id="op-modus" role="group" aria-label="Invoeren op aantal of bedrag">
+          <button type="button" data-modus="aantal" aria-pressed="true">Aantal</button>
+          <button type="button" data-modus="bedrag" aria-pressed="false">Bedrag</button>
+        </div></div>
+      <input class="invoer" id="op-invoer" inputmode="decimal" autocomplete="off" placeholder="0">
+      <div class="pct" id="op-pct" role="group" aria-label="Snelle keuze">
+        <button type="button" data-p="0.25">25%</button><button type="button" data-p="0.5">50%</button><button type="button" data-p="0.75">75%</button><button type="button" data-p="1">100%</button>
+      </div>
+      <p class="beschikbaar mono" id="op-beschikbaar"></p>
+      <dl class="overzicht mono">
+        <dt id="ov-label-prijs">Verwachte prijs</dt><dd id="ov-prijs">-</dd>
+        <dt>Aantal</dt><dd id="ov-aantal">-</dd>
+        <dt>Subtotaal</dt><dd id="ov-sub">-</dd>
+        <dt>Kosten <button type="button" class="vraag" data-begrip="kosten" aria-label="Uitleg: kosten">?</button></dt><dd id="ov-kosten">-</dd>
+        <dt class="tot" id="ov-totaal-label">Totaal te betalen</dt><dd class="tot" id="ov-totaal">-</dd>
+      </dl>
+      <p class="fout" id="op-fout" role="alert"></p>
+      <p class="waarschuwing" id="op-markt-dicht" hidden></p>
+      <p class="melding" id="op-melding" role="status"></p>
+      <button type="submit" class="hoofdknop koop" id="op-submit">Koop</button>
+    </form>
+  </section>
+
+  <section class="portefeuille" id="portefeuille" data-sec="portefeuille" aria-label="Portefeuille"></section>
 </main>
+
+<div class="sheet-schaduw" id="sheet-schaduw"></div>
+<div class="mobiel-balk" id="mobiel-balk">
+  <button type="button" class="koop" data-kant="koop" aria-pressed="true">Koop</button>
+  <button type="button" class="verkoop" data-kant="verkoop" aria-pressed="false">Verkoop</button>
+</div>
+
+<dialog id="bevestig" class="dialoog" aria-labelledby="bv-titel">
+  <h2 id="bv-titel" class="dl-titel"></h2>
+  <p class="hint">Controleer je order voordat je bevestigt.</p>
+  <dl class="overzicht mono" id="bv-lijst"></dl>
+  <p id="bv-uitleg" class="hint"></p>
+  <div class="dl-knoppen"><button type="button" class="knop-klein" id="bv-terug">Terug</button><button type="button" class="hoofdknop koop" id="bv-ok">Bevestig order</button></div>
+</dialog>
 
 <footer class="voet">
   <p>Alles op deze site is fictief. Geen echt geld, geen echte koersen, geen beleggingsadvies.</p>
